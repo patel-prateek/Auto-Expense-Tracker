@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary color: Shade of blue -->
+    <color name="colorPrimary">#0182C5</color>
+    <color name="colorPrimaryDark">#1976D2</color>
+    <color name="statusbar">#335CB3</color>
+
+    <color name="navyBlue">#0762b9</color>
+
+    <!-- Accent color: Shade of orange -->
+    <color name="colorAccent">#A2C3DC</color>
+
+    <!-- Control colors -->
+    <color name="colorControlNormal">#607D8B</color>
+    <color name="colorControlActivated">#455A64</color>
+    <color name="colorControlHighlight">#CFD8DC</color>
+
+    <!-- Switch thumb color -->
+    <color name="colorSwitchThumbNormal">#2196F3</color>
+
+    <!-- Edge effect color -->
+    <color name="colorEdgeEffect">#2196F3</color>
+
+    <!-- Text colors -->
+    <color name="textColorPrimary">#212121</color>
+    <color name="textColorSecondary">#757575</color>
+</resources>

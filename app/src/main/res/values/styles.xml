@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Customize your theme here -->
+    </style>
+
+    <style name="CustomButtonStyle" parent="Widget.MaterialComponents.Button">
+        <!-- Customize button colors here -->
+        <item name="android:textColor">@android:color/white</item>
+        <item name="backgroundTint">@drawable/gradient_foreground</item>
+        <item name="rippleColor">@drawable/gradient_background</item>
+    </style>
+
+</resources>

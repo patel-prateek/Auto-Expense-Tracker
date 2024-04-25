@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">EXPENSE TRACKER</string>
+    <string-array name="year_array">
+        <item>2023</item>
+        <item>2022</item>
+    </string-array>
+</resources>
