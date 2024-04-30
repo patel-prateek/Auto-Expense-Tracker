@@ -72,15 +72,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
         requestPermissions();
 
 
-        //FILLING TOTAL NEED AND WANT
-        TextView want_amount_text_view = findViewById(R.id.want_amount_text_view);
-        TextView need_amount_text_view = findViewById(R.id.need_amount_text_view);
-        ExpenseDbHelper dbHelper = new ExpenseDbHelper(this);
-        double need = dbHelper.getNeed();
-        double want = dbHelper.getWant();
-        need_amount_text_view.setText(String.format("Rs %.2f", need));
-        want_amount_text_view.setText(String.format("Rs %.2f", want));
-        dbHelper.close();
+
 
 
 
@@ -157,7 +149,16 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
 //        }finally {
 //            dbHelper.close();
 //        }
-
+//FILLING TOTAL NEED AND WANT
+        TextView want_amount_text_view = findViewById(R.id.want_amount_text_view);
+        TextView need_amount_text_view = findViewById(R.id.need_amount_text_view);
+        String selectedYearString = (String) yearSpinner.getSelectedItem();
+        ExpenseDbHelper dbHelper = new ExpenseDbHelper(this);
+        double need = dbHelper.getNeed(selectedYearString);
+        double want = dbHelper.getWant(selectedYearString);
+        need_amount_text_view.setText(String.format("Rs %.2f", need));
+        want_amount_text_view.setText(String.format("Rs %.2f", want));
+        dbHelper.close();
     }
 
 

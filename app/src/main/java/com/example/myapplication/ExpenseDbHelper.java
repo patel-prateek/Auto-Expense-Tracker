@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.icu.text.SimpleDateFormat;
 import android.icu.util.Calendar;
 import android.util.Log;
 
@@ -12,6 +13,7 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -147,19 +149,25 @@ public class ExpenseDbHelper extends SQLiteOpenHelper {
 
 
     //READ for saved expenses
-    public double getNeed() {
+    public double getNeed(String selectedYearString) {
         double need=0;
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT * FROM " + TABLE_NAME;
         Cursor cursor = db.rawQuery(query, null);
+        SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy");
+        String yearName;
 
         if (cursor.moveToFirst()) {
             do {
                 double amount = cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_AMOUNT));
                 String category = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_CATEGORY));
-                if(Objects.equals(category, "need")){
+                String description = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DESCRIPTION));
+                long dateTime = cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_DATE));
+                Date date = new Date(dateTime);
+                yearName = yearFormat.format(date);
+                Log.d(TAG, "getNeed: " + amount + " " + category + " " + description);
+                if(Objects.equals(category.toLowerCase(), "need") && Objects.equals(yearName, selectedYearString)){
                     need+=amount;
-//                    Log.d(TAG, "getNeed: " + amount + " " + category);
                 }
             } while (cursor.moveToNext());
         }
@@ -168,17 +176,22 @@ public class ExpenseDbHelper extends SQLiteOpenHelper {
         return need;
     }
 
-    public double getWant() {
+    public double getWant(String selectedYearString) {
         double want=0;
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT * FROM " + TABLE_NAME;
         Cursor cursor = db.rawQuery(query, null);
+        SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy");
+        String yearName;
 
         if (cursor.moveToFirst()) {
             do {
                 double amount = cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_AMOUNT));
                 String category = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_CATEGORY));
-                if(Objects.equals(category, "want")){
+                long dateTime = cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_DATE));
+                Date date = new Date(dateTime);
+                yearName = yearFormat.format(date);
+                if(Objects.equals(category.toLowerCase(), "want") && Objects.equals(yearName, selectedYearString)){
                     want+=amount;
                 }
             } while (cursor.moveToNext());
@@ -216,19 +229,15 @@ public class ExpenseDbHelper extends SQLiteOpenHelper {
     }
 
 
-    public List<Expense> getExpensesByMonth(int month , int year) {
+    public List<Expense> getExpensesByMonth(String month , int year) {
         List<Expense> expenses = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        String startDate = year + "-" + String.format("%02d", month) + "-01";
-
-        // Calculate the last day of the desired month
-        GregorianCalendar calendar = new GregorianCalendar(year, month - 1, 1);
-        int lastDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-        String endDate = year + "-" + String.format("%02d", month) + "-" + String.format("%02d", lastDay);
-
-        String query = "SELECT * FROM " + TABLE_NAME +
-                " WHERE datetime(" + COLUMN_DATE + "/1000, 'unixepoch') BETWEEN '" + startDate + "' AND '" + endDate + "'";
-        Cursor cursor = db.rawQuery(query, null);
+        String selectQuery = "SELECT * FROM " + TABLE_NAME;
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        SimpleDateFormat monthNameFormat = new SimpleDateFormat("MMMM", Locale.getDefault());
+        SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy");
+        String yearName;
+        String monthName;
 
         if (cursor.moveToFirst()) {
             do {
@@ -239,6 +248,12 @@ public class ExpenseDbHelper extends SQLiteOpenHelper {
                 long dateTime = cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_DATE));
                 Date date = new Date(dateTime);
 
+                monthName = monthNameFormat.format(date);
+                yearName = yearFormat.format(date);
+                Log.d(TAG, "year " + year + " yearName " + yearName);
+                if(!Objects.equals(month, monthName) || Integer.parseInt(yearName)!=year){
+                    continue;
+                }
                 Expense expense = new Expense( id, amount, category, description, date);
                 expenses.add(expense);
             } while (cursor.moveToNext());

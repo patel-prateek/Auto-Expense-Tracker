@@ -26,7 +26,7 @@ public class MonthlyExpensesDetails extends AppCompatActivity {
     static public Button del;
     static public List<UUID> checkedData = new ArrayList<>();
     List<Expense> expenses;
-    int desiredMonth;
+    String desiredMonth;
     int yearName;
 
 
@@ -42,8 +42,8 @@ public class MonthlyExpensesDetails extends AppCompatActivity {
         dbHelper = new ExpenseDbHelper(this);
         // Prompt the user to enter the desired month
         assert monthName != null;
-        desiredMonth = getMonthNumber(monthName);
-        expenses = dbHelper.getExpensesByMonth(desiredMonth , yearName);
+//        desiredMonth = getMonthNumber(monthName);
+        expenses = dbHelper.getExpensesByMonth(monthName , yearName);
         double need = 0;
         double want = 0;
         for (int i = 0; i < expenses.size(); i++) {
